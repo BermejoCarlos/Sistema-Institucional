@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html {
+        font-family: 'Roboto', system-ui, sans-serif;
+        color: #191919;
+        width: 100%;
+        overflow-x: hidden;
+        background: #EBEBEB;
+    }
+
+    .dark{
+        @apply bg-[#131419] text-[#EBEBEB]
+    }
+}
+
+@layer utilities {
+    .neumorphism-light-1 {
+        box-shadow: 2px 2px 5px #BABECC,-5px -5px 10px #ffffff73;
+    }
+    .neumorphism-light-2 {
+        box-shadow: inset 2px 2px 5px #BABECC,inset -5px -5px 10px #ffffff73, 2px 2px 5px #BABECC, -5px -5px 10px #ffffff73;
+    }
+
+
+    .neumorphism-dark-1 {
+        box-shadow: -3px -3px 7px #ffffff0d, 3px 3px 5px #00000080;
+    }
+
+        .neumorphism-dark-2 {
+        box-shadow: inset -3px -3px 7px #ffffff0d,inset 3px 3px 5px #00000080, -3px -3px 7px #ffffff0d, 3px 3px 5px #00000080;
+    }
+}
