@@ -4,9 +4,24 @@ import { Fragment, useEffect, useRef, useState } from 'react'
 import { HiOutlineEllipsisHorizontal } from 'react-icons/hi2';
 import { AiOutlineDelete, AiOutlineEdit, AiOutlineEye } from 'react-icons/ai';
 import { useStateContext } from '@/context/ContextProvider';
+import Link from 'next/link';
+import { deleteAdministrator } from '@/api/administrators.api';
 
-export default function Example() {
-    const { themeColor, showSidebar, setShowSidebar, screenSize } = useStateContext();
+export default function Example({ id }) {
+    const { data, setData } = useStateContext();
+
+    const deleteTask = async () => {
+        
+        try {
+            const res = await deleteAdministrator(id);
+            if (res.status === 204){
+                setData(data.filter((item) => item._id !== id));
+            } 
+            console.log(id);
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
         <div>
@@ -23,14 +38,14 @@ export default function Example() {
                                 </button>
                             </Menu.Item>
                             <Menu.Item>
-                                <button className={`group w-full flex items-center gap-2 px-2 py-2 rounded-md text-sm hover:bg-blue-500 hover:text-white`}>
+                                <Link className={`group w-full flex items-center gap-2 px-2 py-2 rounded-md text-sm hover:bg-blue-500 hover:text-white`} href={`/system/administrators/${id}`}>
                                     <AiOutlineEdit /> Editar
-                                </button>
+                                </Link>
                             </Menu.Item>
                         </div>
                         <div className="px-1 py-1">
                             <Menu.Item>
-                                <button className={`group w-full flex items-center gap-2 px-2 py-2 rounded-md text-sm hover:bg-blue-500 hover:text-white`}>
+                                <button className={`group w-full flex items-center gap-2 px-2 py-2 rounded-md text-sm hover:bg-blue-500 hover:text-white`} onClick={deleteTask}>
                                     <AiOutlineDelete /> Eliminar
                                 </button>
                             </Menu.Item>

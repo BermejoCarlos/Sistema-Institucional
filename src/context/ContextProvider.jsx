@@ -11,6 +11,10 @@ export const StateProvider = ({ children }) => {
   const [athleteData, setAthleteData] = useState(null);
 
 
+  // API DATA
+  const [data, setData] = useState([]);
+
+
   // state of the theme
   const [themeColor, setThemeColor] = useState('#03C9D7');
   const [themeMode, setThemeMode] = useState('Light');
@@ -26,6 +30,8 @@ export const StateProvider = ({ children }) => {
     athleteAuthenticated, setAthleteAuthenticated,
     adminData, setAdminData,
     athleteData, setAthleteData,
+
+    data, setData,
 
     themeColor, setThemeColor,
     themeMode, setThemeMode,

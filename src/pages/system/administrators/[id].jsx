@@ -1,17 +1,26 @@
 import H2 from '@/components/system.h2'
 import Main from '@/layouts/system.layouts'
+import React, { Fragment, useEffect } from 'react'
+import Axios from 'axios'
 
 
 import { useState } from 'react'
-import toast, { Toaster } from 'react-hot-toast';
+import { Listbox, Transition } from '@headlessui/react'
 
 
 import { AiOutlineUser } from 'react-icons/ai'
-import { addAdministrator } from '@/api/administrators.api'
+import { BsArrowRepeat, BsCheckLg } from 'react-icons/bs'
+import { Router, useRouter } from 'next/router'
+import { getAdministrator } from '@/api/administrators.api'
+import { useStateContext } from '@/context/ContextProvider'
 
 export default function System_Administrators_Add() {
 
-  const [fieldsValue, setFieldsValue] = useState({ name: '', surname: '', email: '', identificationCard: '' })
+  const router = useRouter();
+  
+  const { id } = router.query;
+
+  const [fieldsValue, setFieldsValue] = useState({})
 
   const inputChange = ({ target }) => {
 
@@ -19,29 +28,32 @@ export default function System_Administrators_Add() {
     setFieldsValue({ ...fieldsValue, [name]: value })
   }
 
-  const sendForm = async (e) => {
+  const sendForm = (e) => {
 
     e.preventDefault();
 
-    const notification = toast.loading('Registrando...');
-    const res = await addAdministrator(fieldsValue)
+    Axios.post('http://localhost:4000/administrators/add', fieldsValue).then((response) => {
 
-    res.data.status == 'success' ?
-      toast.success(res.data.message, { id: notification }) :
-      toast.error(res.data.message, { id: notification })
+      console.log(response);
+    })
   }
+
+  const administrators = async () => {
+    const res = await getAdministrator(id);
+    setFieldsValue(res.data);
+    console.log(res.data.name);
+  };
+  console.log(fieldsValue);
+  useEffect(() => { administrators() }, [])
+
 
   return (
     <Main>
-      <H2 category={'Usuarios'} title={'Administradores'} />
-
+      <H2 category={'Registros'} title={'Editar Administrador'} />
       <div className='w-11/12 bg-white m-10 mt-10 p-10 rounded-3xl drop-shadow-sm dark:bg-dark-1'>
-        <div className='flex flex-col gap-1'>
-          <h2 className='text-2xl'>Agregar Administrador</h2>
-          <p className='text-gray-500'>Para registrar un nuevo Administrador, complete el siguiente formulario con los datos solicitado.</p>
+        <div className='py-10 border-b-2 border-light-2'>
+          <h1 className='text-xl'>Perfil</h1>
         </div>
-        
-        <hr className='my-10 border-light-2 dark:border-dark-3' />
 
         <form className='py-10' onSubmit={sendForm}>
           <div className='flex items-center mb-8'>
@@ -61,7 +73,7 @@ export default function System_Administrators_Add() {
           <hr className='my-10 border-light-2 dark:border-dark-3' />
 
           <div className='flex justify-end'>
-            <button type='submit' className='bg-blue-500 py-2 px-4 rounded-lg text-white duration-200 hover:bg-blue-700'>Registrar</button>
+            <button type='submit' className='bg-blue-500 py-2 px-4 rounded-lg text-white duration-200 hover:bg-blue-700'>Editar</button>
           </div>
         </form>
       </div>

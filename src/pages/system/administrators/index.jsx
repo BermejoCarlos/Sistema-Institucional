@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { flexRender, getCoreRowModel, useReactTable, getPaginationRowModel } from "@tanstack/react-table";
 import Link from "next/link";
 
@@ -15,11 +15,16 @@ import { HiOutlineSearch } from "react-icons/hi";
 import { MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight, MdOutlineKeyboardDoubleArrowLeft, MdOutlineKeyboardDoubleArrowRight } from "react-icons/md";
 import Main from "@/layouts/system.layouts";
 import { rootLink } from "@/data/system.links";
+import Axios from "axios";
+import { useStateContext } from "@/context/ContextProvider";
+import { GetAdministrators } from "@/context/administratorsApi.context";
+import { getAdministrators } from "@/api/administrators.api";
 
 
 
 export default function System_Administrators() {
-    const [data] = useState(defaultData)
+    const { data, setData } = useStateContext()
+
 
     const columns = [
         {
@@ -29,7 +34,7 @@ export default function System_Administrators() {
                 const { name } = info.row.original
                 return (
                     <div src="" alt="" className="h-8 w-8 bg-light-2 flex justify-center items-center m-auto rounded-full dark:bg-dark-2">
-                        <AiOutlineUser/>
+                        <AiOutlineUser />
                     </div>
                 )
             },
@@ -40,12 +45,8 @@ export default function System_Administrators() {
             header: () => <span>Nombre</span>,
         },
         {
-            accessorKey: 'lastName',
+            accessorKey: 'surname',
             header: () => <span>Apellidos</span>
-        },
-        {
-            accessorKey: 'age',
-            header: () => <span>Edad</span>
         },
         {
             accessorKey: 'status',
@@ -53,9 +54,9 @@ export default function System_Administrators() {
             cell: info => {
                 return (
                     <span
-                        class="inline-flex items-center gap-1 rounded-full bg-green-50 px-2 py-1 text-xs font-semibold text-green-600"
+                        className="inline-flex items-center gap-1 rounded-full bg-green-50 px-2 py-1 text-xs font-semibold text-green-600"
                     >
-                        <span class="h-1.5 w-1.5 rounded-full bg-green-600"></span>
+                        <span className="h-1.5 w-1.5 rounded-full bg-green-600"></span>
                         Active
                     </span>
                 )
@@ -67,9 +68,9 @@ export default function System_Administrators() {
             header: 'Acciones',
             cell: info => {
 
-                const { id } = info.row.original
+                const { _id } = info.row.original
                 return (
-                    <Example></Example>
+                    <Example id={_id}></Example>
 
                 )
             },
@@ -84,14 +85,21 @@ export default function System_Administrators() {
         getPaginationRowModel: getPaginationRowModel()
     })
 
+    const administrators = async () => {
+        const res = await getAdministrators();
+        setData(res.data);
+    };
+
+    useEffect(() => { administrators() }, [])
+    
     return (
         <Main>
-            <H2 category={'Usuarios'} title={'Administradores'}/>
+            <H2 category={'Usuarios'} title={'Administradores'} />
 
             <div className="w-11/12 bg-white m-10 mt-10 p-10 rounded-xl">
                 <div className="flex justify-between items-center">
                     <Link href={`${rootLink}/administrators/add`} className="bg-blue-500 flex gap-2 items-center px-4 py-1.5 rounded-lg text-white hover:bg-blue-600">
-                        <AiOutlineUser className="text-xl"/> Agregar
+                        <AiOutlineUser className="text-xl" /> Agregar
                     </Link>
 
                     <div className="w-1/3 h-10 mb-7 flex items-center">
@@ -128,20 +136,20 @@ export default function System_Administrators() {
 
                 <div className='py-10 flex items-center justify-between text-center'>
                     <div className='flex items-center gap-3'>
-                        <button className='bg-light-2 p-2 rounded-full disabled:opacity-50'  onClick={() => table.setPageIndex(0)} disabled={!table.getCanPreviousPage()}>
+                        <button className='bg-light-2 p-2 rounded-full disabled:opacity-50' onClick={() => table.setPageIndex(0)} disabled={!table.getCanPreviousPage()}>
                             <MdOutlineKeyboardDoubleArrowLeft />
                         </button>
                         <button className='bg-light-2 p-2 rounded-full disabled:opacity-50' onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
                             <MdOutlineKeyboardArrowLeft />
                         </button>
-                        <button className='bg-light-2 p-2 rounded-full disabled:opacity-50'  onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+                        <button className='bg-light-2 p-2 rounded-full disabled:opacity-50' onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
                             <MdOutlineKeyboardArrowRight />
                         </button>
-                        <button className='bg-light-2 p-2 rounded-full disabled:opacity-50'  onClick={() => table.setPageIndex(table.getPageCount() - 1)} disabled={!table.getCanNextPage()}>
+                        <button className='bg-light-2 p-2 rounded-full disabled:opacity-50' onClick={() => table.setPageIndex(table.getPageCount() - 1)} disabled={!table.getCanNextPage()}>
                             <MdOutlineKeyboardDoubleArrowRight />
                         </button>
                     </div>
-                    <select className='cursor-pointer bg-light-2 p-2 outline-none border rounded-lg' onChange={e => {table.setPageSize(Number(e.target.value))}}>
+                    <select className='cursor-pointer bg-light-2 p-2 outline-none border rounded-lg' onChange={e => { table.setPageSize(Number(e.target.value)) }}>
                         <option value="5">5 pág.</option>
                         <option value="10">10 pág.</option>
                         <option value="20">20 pág.</option>
